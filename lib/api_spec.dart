@@ -68,7 +68,7 @@ String _getType(Element field) {
     case 'ref':
       return _getTypeScriptTypeName(field.text);
     case 'list':
-      return 'List<${_getType(_getChild(field))}>';
+      return '${_getType(_getChild(field))}[]';
     case 'map':
       return '{ [key: string]: ${_getType(_getChild(_getChild(field, "value")))}; }';
     case 'union':
