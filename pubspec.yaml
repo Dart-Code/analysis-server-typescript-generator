@@ -1,3 +1,4 @@
 name: analysis_server_typescript_generator
 dependencies:
   http:
+  html:
