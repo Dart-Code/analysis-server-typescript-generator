@@ -22,9 +22,15 @@ class TypeScriptGenerator {
     await file.writeAsString(output.toString());
   }
 
-  _createClass(StringBuffer output, ClassDefinition classDefinition) {
+  void _createClass(StringBuffer output, ClassDefinition classDefinition) {
+    output.writeln(_formatDoc(classDefinition.doc));
     output.writeln('export class ${classDefinition.name} {');
     output.writeln('}');
     output.writeln();
+  }
+
+  String _formatDoc(String doc) {
+    final lines = doc.trim().split('\n').map((l) => l.trim());
+    return '/**\r\n' + lines.map((l) => ' * $l').join('\r\n') + '\r\n */';
   }
 }
