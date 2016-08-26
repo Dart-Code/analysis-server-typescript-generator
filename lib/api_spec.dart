@@ -23,7 +23,7 @@ class ApiSpec {
   }
 
   ClassDefinition _createRequestClass(Element method) {
-    final name = method.parent.attributes["name"] +
+    final name = _titleCase(method.parent.attributes["name"]) +
         _titleCase(method.attributes["method"]) +
         "Request";
     final doc = _getDocs(method);
