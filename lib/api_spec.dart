@@ -17,30 +17,31 @@ class ApiSpec {
   }
 
   void buildClasses(List<ClassDefinition> classes) {
-    _apiDoc.querySelectorAll("request")
-      ..forEach((r) => classes.add(_createRequestClass(r)))
-      ..forEach((r) => classes.add(_createResponseClass(r)));
+    _apiDoc.querySelectorAll("request").forEach((r) {
+      final req = _createRequestClass(r);
+      if (req != null) classes.add(req);
+      final resp = _createResponseClass(r);
+      if (resp != null) classes.add(resp);
+    });
   }
 
-  ClassDefinition _createRequestClass(Element method) {
+  ClassDefinition _createRequestClass(Element method) =>
+      _createClass(method, "Request", "params");
+  ClassDefinition _createResponseClass(Element method) =>
+      _createClass(method, "Response", "result");
+
+  ClassDefinition _createClass(Element method, String suffix, String type) {
     final name = _titleCase(method.parent.attributes["name"]) +
         _titleCase(method.attributes["method"]) +
-        "Request";
+        suffix;
     final doc = _getDocs(method);
+    final properties = method.querySelectorAll("$type field");
+
+    if (properties.length == 0) return null;
 
     final def = new ClassDefinition(name, doc);
-    def.properties.addAll(
-        method.querySelectorAll("params field").map(_getPropertyDefinition));
+    def.properties.addAll(properties.map(_getPropertyDefinition));
     return def;
-  }
-
-  ClassDefinition _createResponseClass(Element method) {
-    final name = method.parent.attributes["name"] +
-        _titleCase(method.attributes["method"]) +
-        "Response";
-    final doc = _getDocs(method);
-
-    return new ClassDefinition(name, doc);
   }
 
   PropertyDefinition _getPropertyDefinition(Element field) {

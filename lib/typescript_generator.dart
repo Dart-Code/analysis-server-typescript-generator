@@ -25,7 +25,7 @@ class TypeScriptGenerator {
 
   void _writeClass(StringBuffer output, ClassDefinition cl) {
     output.writeln(_formatDoc(cl.doc));
-    output.writeln('export interface ${cl.name} {');
+    output.write('export interface ${cl.name} {');
     cl.properties.forEach((p) => _writeProperty(output, p));
     output.writeln('}');
     output.writeln();
@@ -33,9 +33,9 @@ class TypeScriptGenerator {
 
   void _writeProperty(StringBuffer output, PropertyDefinition prop) {
     final indent = _getIndent(1);
-    output.writeln(_formatDoc(prop.doc, indent: indent));
-    output.writeln('$indent${prop.name}${prop.isOptional ? "?" : ""}: ${prop.type};');
     output.writeln();
+    output.writeln(_formatDoc(prop.doc, indent: indent));
+    output.writeln('$indent${prop.name}${prop.isOptional ? "?" : ""}: ${prop.type};');    
   }
 
   String _formatDoc(String doc, { String indent: ""}) {
