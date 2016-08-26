@@ -8,8 +8,11 @@ class ClassDefinition {
 }
 
 class PropertyDefinition {
+  String type;
+  String value;
   String name;
+  bool isOptional;
   String doc;
 
-  PropertyDefinition(this.name, this.doc);
+  PropertyDefinition(this.type, this.name, this.isOptional, this.doc);
 }

@@ -16,22 +16,25 @@ class ApiSpec {
     return new ApiSpec._(resp.body);
   }
 
-  buildClasses(List<ClassDefinition> classes) {
+  void buildClasses(List<ClassDefinition> classes) {
     _apiDoc.querySelectorAll("request")
       ..forEach((r) => classes.add(_createRequestClass(r)))
       ..forEach((r) => classes.add(_createResponseClass(r)));
   }
 
-  _createRequestClass(Element method) {
+  ClassDefinition _createRequestClass(Element method) {
     final name = method.parent.attributes["name"] +
         _titleCase(method.attributes["method"]) +
         "Request";
     final doc = _getDocs(method);
 
-    return new ClassDefinition(name, doc);
+    final def = new ClassDefinition(name, doc);
+    def.properties.addAll(
+        method.querySelectorAll("params field").map(_getPropertyDefinition));
+    return def;
   }
 
-  _createResponseClass(Element method) {
+  ClassDefinition _createResponseClass(Element method) {
     final name = method.parent.attributes["name"] +
         _titleCase(method.attributes["method"]) +
         "Response";
@@ -40,11 +43,49 @@ class ApiSpec {
     return new ClassDefinition(name, doc);
   }
 
-  String _titleCase(String str) =>
-      str.substring(0, 1).toUpperCase() + str.substring(1);
-
-  String _getDocs(Element element) => element.children
-      .where((c) => c.localName == "p")
-      .map((p) => p.text)
-      .join("\r\n");
+  PropertyDefinition _getPropertyDefinition(Element field) {
+    return new PropertyDefinition(
+        _getType(_getChild(field)),
+        field.attributes["name"],
+        field.attributes["optional"] == "true",
+        _getDocs(field));
+  }
 }
+
+String _getTypeScriptTypeName(String dartType) {
+  const types = const {
+    "String": "string",
+    "int": "number",
+    "long": "number",
+    "bool": "boolean",
+  };
+
+  return types[dartType] ?? dartType;
+}
+
+String _getType(Element field) {
+  switch (field.localName) {
+    case 'ref':
+      return _getTypeScriptTypeName(field.text);
+    case 'list':
+      return 'List<${_getType(_getChild(field))}>';
+    case 'map':
+      return '{ [key: string]: ${_getType(_getChild(_getChild(field, "value")))}; }';
+    case 'union':
+      return _getChildren(field).map(_getType).join("|");
+    default:
+      throw 'Unknown ${field.parent.outerHtml}';
+  }
+}
+
+String _titleCase(String str) =>
+    str.substring(0, 1).toUpperCase() + str.substring(1);
+
+String _getDocs(Element element) =>
+    _getChildren(element, 'p').map((p) => p.text).join("\r\n");
+
+Iterable<Element> _getChildren(Element element, [String tag]) =>
+    element.children.where((c) =>
+        c.nodeType != Node.TEXT_NODE && (tag == null || c.localName == tag));
+
+Element _getChild(Element element, [String tag]) => _getChildren(element).first;

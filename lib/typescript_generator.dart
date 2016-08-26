@@ -8,6 +8,7 @@ final _header = '''
 // and should not be hand-edited!
 
 "use strict";
+
 ''';
 
 class TypeScriptGenerator {
@@ -16,21 +17,31 @@ class TypeScriptGenerator {
   Future writeTo(File file) async {
     final output = new StringBuffer(_header);
 
-    classes.forEach((c) => _createClass(output, c));
+    classes.forEach((c) => _writeClass(output, c));
 
     await file.parent.create(recursive: true);
     await file.writeAsString(output.toString());
   }
 
-  void _createClass(StringBuffer output, ClassDefinition classDefinition) {
-    output.writeln(_formatDoc(classDefinition.doc));
-    output.writeln('export class ${classDefinition.name} {');
+  void _writeClass(StringBuffer output, ClassDefinition cl) {
+    output.writeln(_formatDoc(cl.doc));
+    output.writeln('export class ${cl.name} {');
+    cl.properties.forEach((p) => _writeProperty(output, p));
     output.writeln('}');
     output.writeln();
   }
 
-  String _formatDoc(String doc) {
-    final lines = doc.trim().split('\n').map((l) => l.trim());
-    return '/**\r\n' + lines.map((l) => ' * $l').join('\r\n') + '\r\n */';
+  void _writeProperty(StringBuffer output, PropertyDefinition prop) {
+    final indent = _getIndent(1);
+    output.writeln(_formatDoc(prop.doc, indent: indent));
+    output.writeln('$indent${prop.name}: ${prop.type};');
+    output.writeln();
   }
+
+  String _formatDoc(String doc, { String indent: ""}) {
+    final lines = doc.trim().split('\n').map((l) => l.trim());
+    return '$indent/**\r\n' + lines.map((l) => '$indent * $l').join('\r\n') + '\r\n$indent */';
+  }
+
+  String _getIndent(num level) => '\t' * level;
 }
