@@ -25,6 +25,7 @@ class ApiSpec {
     });
     classes.addAll(
         _apiDoc.querySelectorAll("notification").map(_createNotificationClass));
+    classes.addAll(_apiDoc.querySelectorAll("type").map(_createTypeClass));
   }
 
   ClassDefinition _createRequestClass(Element method) => _createClass(
@@ -47,6 +48,9 @@ class ApiSpec {
           _titleCase(event.attributes["event"]) +
           "Notification",
       "params");
+
+  ClassDefinition _createTypeClass(Element type) =>
+      _createClass(type, _titleCase(type.attributes["name"]), "object");
 
   ClassDefinition _createClass(Element method, String name, String type) {
     final doc = _getDocs(method);
@@ -104,4 +108,5 @@ Iterable<Element> _getChildren(Element element, [String tag]) =>
     element.children.where((c) =>
         c.nodeType != Node.TEXT_NODE && (tag == null || c.localName == tag));
 
-Element _getChild(Element element, [String tag]) => _getChildren(element, tag).first;
+Element _getChild(Element element, [String tag]) =>
+    _getChildren(element, tag).first;
