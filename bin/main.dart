@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import '../lib/api_spec.dart';
-import '../lib/typescript_generator.dart';
+import 'package:analysis_server_typescript_generator/api_spec.dart';
+import 'package:analysis_server_typescript_generator/typescript_generator.dart';
 
 final _specUri = Uri.parse(
     'https://github.com/dart-lang/sdk/raw/master/pkg/analysis_server/tool/spec/spec_input.html');
