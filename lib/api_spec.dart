@@ -104,4 +104,4 @@ Iterable<Element> _getChildren(Element element, [String tag]) =>
     element.children.where((c) =>
         c.nodeType != Node.TEXT_NODE && (tag == null || c.localName == tag));
 
-Element _getChild(Element element, [String tag]) => _getChildren(element).first;
+Element _getChild(Element element, [String tag]) => _getChildren(element, tag).first;
