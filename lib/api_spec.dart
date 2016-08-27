@@ -120,7 +120,7 @@ String _getType(Element field) {
     case 'map':
       return '{ [key: string]: ${_getType(_getChild(_getChild(field, "value")))}; }';
     case 'union':
-      return _getChildren(field).map(_getType).join("|");
+      return _getChildren(field).map(_getType).join(" | ");
     default:
       throw 'Unknown ${field.parent.outerHtml}';
   }

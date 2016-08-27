@@ -40,6 +40,8 @@ class TypeScriptGenerator {
   void _writeInterface(StringBuffer output, InterfaceDefinition def) {
     output.write('export interface ${def.name} {');
     def.properties.forEach((p) => _writeProperty(output, p));
+    // Match Formatted typescript by having empty space for empty interfaces.
+    if (def.properties.length == 0) output.write(' ');
     output.writeln('}');
   }
 
