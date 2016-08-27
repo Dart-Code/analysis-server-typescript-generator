@@ -38,7 +38,7 @@ class TypeScriptGenerator {
     final indent = _getIndent(1);
     output.writeln();
     output.writeln(_formatDoc(prop.doc, indent: indent));
-    output.writeln('$indent${prop.name}${prop.isOptional ? "?" : ""}: ${prop.type}${compatMode ? "" : ";"}');    
+    output.writeln('$indent${prop.name}${prop.isOptional && !compatMode ? "?" : ""}: ${prop.type}${compatMode ? "" : ";"}');    
   }
 
   String _formatDoc(String doc, { String indent: ""}) {
