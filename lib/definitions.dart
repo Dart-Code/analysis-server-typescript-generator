@@ -1,9 +1,9 @@
-class ClassDefinition {
+class InterfaceDefinition {
   String name;
   String doc;
   final List<PropertyDefinition> properties;
 
-  ClassDefinition(this.name, this.doc)
+  InterfaceDefinition(this.name, this.doc)
       : this.properties = new List<PropertyDefinition>();
 }
 

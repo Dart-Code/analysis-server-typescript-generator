@@ -15,7 +15,7 @@ final _header = '''
 ''';
 
 class TypeScriptGenerator {
-  final classes = new List<ClassDefinition>(); 
+  final classes = new List<InterfaceDefinition>(); 
 
   Future writeTo(File file) async {
     final output = new StringBuffer(_header);
@@ -26,7 +26,7 @@ class TypeScriptGenerator {
     await file.writeAsString(output.toString());
   }
 
-  void _writeClass(StringBuffer output, ClassDefinition cl) {
+  void _writeClass(StringBuffer output, InterfaceDefinition cl) {
     output.writeln(_formatDoc(cl.doc));
     output.write('export interface ${cl.name} {');
     cl.properties.forEach((p) => _writeProperty(output, p));

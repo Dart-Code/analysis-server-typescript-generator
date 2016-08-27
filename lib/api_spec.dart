@@ -16,49 +16,54 @@ class ApiSpec {
     return new ApiSpec._(resp.body);
   }
 
-  void buildClasses(List<ClassDefinition> classes) {
+  void buildClasses(List<InterfaceDefinition> classes) {
     _apiDoc.querySelectorAll("request").forEach((r) {
-      final req = _createRequestClass(r);
+      final req = _createRequestInterface(r);
       if (req != null) classes.add(req);
-      final resp = _createResponseClass(r);
+      final resp = _createResponseInterface(r);
       if (resp != null) classes.add(resp);
     });
-    classes.addAll(
-        _apiDoc.querySelectorAll("notification").map(_createNotificationClass));
-    classes.addAll(_apiDoc.querySelectorAll("type").map(_createTypeClass));
+    classes.addAll(_apiDoc
+        .querySelectorAll("notification")
+        .map(_createNotificationInterface));
+    classes.addAll(_apiDoc.querySelectorAll("type").map(_createTypeInterface));
   }
 
-  ClassDefinition _createRequestClass(Element method) => _createClass(
-      method,
-      _titleCase(method.parent.attributes["name"]) +
-          _titleCase(method.attributes["method"]) +
-          "Request",
-      "params");
+  InterfaceDefinition _createRequestInterface(Element method) =>
+      _createInterface(
+          method,
+          _titleCase(method.parent.attributes["name"]) +
+              _titleCase(method.attributes["method"]) +
+              "Request",
+          "params");
 
-  ClassDefinition _createResponseClass(Element method) => _createClass(
-      method,
-      _titleCase(method.parent.attributes["name"]) +
-          _titleCase(method.attributes["method"]) +
-          "Response",
-      "result");
+  InterfaceDefinition _createResponseInterface(Element method) =>
+      _createInterface(
+          method,
+          _titleCase(method.parent.attributes["name"]) +
+              _titleCase(method.attributes["method"]) +
+              "Response",
+          "result");
 
-  ClassDefinition _createNotificationClass(Element event) => _createClass(
-      event,
-      _titleCase(event.parent.attributes["name"]) +
-          _titleCase(event.attributes["event"]) +
-          "Notification",
-      "params");
+  InterfaceDefinition _createNotificationInterface(Element event) =>
+      _createInterface(
+          event,
+          _titleCase(event.parent.attributes["name"]) +
+              _titleCase(event.attributes["event"]) +
+              "Notification",
+          "params");
 
-  ClassDefinition _createTypeClass(Element type) =>
-      _createClass(type, _titleCase(type.attributes["name"]), "object");
+  InterfaceDefinition _createTypeInterface(Element type) =>
+      _createInterface(type, _titleCase(type.attributes["name"]), "object");
 
-  ClassDefinition _createClass(Element method, String name, String type) {
+  InterfaceDefinition _createInterface(
+      Element method, String name, String type) {
     final doc = _getDocs(method);
     final properties = method.querySelectorAll("$type field");
 
     if (properties.length == 0) return null;
 
-    final def = new ClassDefinition(name, doc);
+    final def = new InterfaceDefinition(name, doc);
     def.properties.addAll(properties.map(_getPropertyDefinition));
     return def;
   }
