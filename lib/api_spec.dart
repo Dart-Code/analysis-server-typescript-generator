@@ -98,7 +98,7 @@ String _titleCase(String str) =>
     str.substring(0, 1).toUpperCase() + str.substring(1);
 
 String _getDocs(Element element) =>
-    _getChildren(element, 'p').map((p) => p.text).join("\r\n");
+    _getChildren(element, 'p').map((p) => p.text.trim()).join("\r\n\r\n");
 
 Iterable<Element> _getChildren(Element element, [String tag]) =>
     element.children.where((c) =>
