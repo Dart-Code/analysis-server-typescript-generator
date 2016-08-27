@@ -11,7 +11,7 @@ main() async {
   final spec = await ApiSpec.download(_specUri);
   final gen = new TypeScriptGenerator();
 
-  spec.buildClasses(gen.classes);
+  spec.buildDefinitions(gen.definitions);
 
   await gen.writeTo(_outputFile);
 }

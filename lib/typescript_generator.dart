@@ -15,35 +15,69 @@ final _header = '''
 ''';
 
 class TypeScriptGenerator {
-  final classes = new List<InterfaceDefinition>(); 
+  final definitions = new List<Definition>();
 
   Future writeTo(File file) async {
     final output = new StringBuffer(_header);
 
-    classes.forEach((c) => _writeClass(output, c));
+    // TODO: Remove these when ordering doesn't matter.
+    definitions
+        .where((t) => !(t is TypeAliasDefinition) && !(t is EnumDefinition))
+        .forEach((c) => _writeDefinition(output, c));
+    definitions
+        .where((t) => t is EnumDefinition)
+        .forEach((c) => _writeDefinition(output, c));
+    definitions
+        .where((t) => t is TypeAliasDefinition)
+        .forEach((c) => _writeDefinition(output, c));
 
     await file.parent.create(recursive: true);
     await file.writeAsString(output.toString());
   }
 
-  void _writeClass(StringBuffer output, InterfaceDefinition cl) {
-    output.writeln(_formatDoc(cl.doc));
-    output.write('export interface ${cl.name} {');
-    cl.properties.forEach((p) => _writeProperty(output, p));
-    output.writeln('}');
+  void _writeDefinition(StringBuffer output, Definition def) {
+    output.writeln(_formatDoc(def.doc));
+    if (def is InterfaceDefinition)
+      _writeInterface(output, def);
+    else if (def is EnumDefinition)
+      _writeEnum(output, def);
+    else if (def is TypeAliasDefinition)
+      _writeTypeAlias(output, def);
+    else
+      throw "Unknown type!";
     output.writeln();
+  }
+
+  void _writeInterface(StringBuffer output, InterfaceDefinition def) {
+    output.write('export interface ${def.name} {');
+    def.properties.forEach((p) => _writeProperty(output, p));
+    output.writeln('}');
   }
 
   void _writeProperty(StringBuffer output, PropertyDefinition prop) {
     final indent = _getIndent(1);
     output.writeln();
     output.writeln(_formatDoc(prop.doc, indent: indent));
-    output.writeln('$indent${prop.name}${prop.isOptional && !compatMode ? "?" : ""}: ${prop.type}${compatMode ? "" : ";"}');    
+    output.writeln(
+        '$indent${prop.name}${prop.isOptional && !compatMode ? "?" : ""}: ${prop.type}${compatMode ? "" : ";"}');
   }
 
-  String _formatDoc(String doc, { String indent: ""}) {
+  void _writeEnum(StringBuffer output, EnumDefinition def) {
+    output.writeln('export type ${def.name} =');
+    final indent = _getIndent(1);
+    final values = def.values.map((v) => '"$v"').join('\r\n$indent| ');
+    output.writeln('$indent$values;');
+  }
+
+  void _writeTypeAlias(StringBuffer output, TypeAliasDefinition def) {
+    output.writeln('export interface ${def.name} = ${def.type};');
+  }
+
+  String _formatDoc(String doc, {String indent: ""}) {
     final lines = doc.trim().split('\n').map((l) => l.trim());
-    return '$indent/**\r\n' + lines.map((l) => '$indent${compatMode ? "" : " * "}$l').join('\r\n') + '\r\n$indent${compatMode ? "" : " "}*/';
+    return '$indent/**\r\n' +
+        lines.map((l) => '$indent${compatMode ? "" : " * "}$l').join('\r\n') +
+        '\r\n$indent${compatMode ? "" : " "}*/';
   }
 
   String _getIndent(num level) => '\t' * level;

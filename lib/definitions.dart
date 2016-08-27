@@ -1,18 +1,33 @@
-class InterfaceDefinition {
+class Definition {
   String name;
   String doc;
-  final List<PropertyDefinition> properties;
 
-  InterfaceDefinition(this.name, this.doc)
-      : this.properties = new List<PropertyDefinition>();
+  Definition(this.name, this.doc);
 }
 
-class PropertyDefinition {
+class InterfaceDefinition extends Definition {
+  final properties = new List<PropertyDefinition>();
+
+  InterfaceDefinition(String name, String doc) : super(name, doc);
+}
+
+class PropertyDefinition extends Definition {
   String type;
   String value;
-  String name;
   bool isOptional;
-  String doc;
 
-  PropertyDefinition(this.type, this.name, this.isOptional, this.doc);
+  PropertyDefinition(this.type, String name, this.isOptional, String doc)
+      : super(name, doc);
+}
+
+class EnumDefinition extends Definition {
+  final values = new List<String>();
+
+  EnumDefinition(String name, String doc) : super(name, doc);
+}
+
+class TypeAliasDefinition extends Definition {
+  String type;
+
+  TypeAliasDefinition(this.type, String name, String doc) : super(name, doc);
 }

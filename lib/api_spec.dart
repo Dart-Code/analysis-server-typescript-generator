@@ -16,17 +16,27 @@ class ApiSpec {
     return new ApiSpec._(resp.body);
   }
 
-  void buildClasses(List<InterfaceDefinition> classes) {
+  void buildDefinitions(List<Definition> defs) {
+    // Request/responses.
     _apiDoc.querySelectorAll("request").forEach((r) {
       final req = _createRequestInterface(r);
-      if (req != null) classes.add(req);
+      if (req != null) defs.add(req);
       final resp = _createResponseInterface(r);
-      if (resp != null) classes.add(resp);
+      if (resp != null) defs.add(resp);
     });
-    classes.addAll(_apiDoc
+    // Notifications.
+    defs.addAll(_apiDoc
         .querySelectorAll("notification")
         .map(_createNotificationInterface));
-    classes.addAll(_apiDoc.querySelectorAll("type").map(_createTypeInterface));
+    // Types.
+    _apiDoc.querySelectorAll("type").forEach((t) {
+      if (_getChild(t, "enum") != null)
+        defs.add(_createEnum(t));
+      else if (_getChild(t, "ref") != null)
+        defs.add(_createTypeAlias(t));
+      else
+        defs.add(_createTypeInterface(t));
+    });
   }
 
   InterfaceDefinition _createRequestInterface(Element method) =>
@@ -54,14 +64,27 @@ class ApiSpec {
           "params");
 
   InterfaceDefinition _createTypeInterface(Element type) =>
-      _createInterface(type, _titleCase(type.attributes["name"]), "object");
+      _createInterface(type, _titleCase(type.attributes["name"]), "object",
+          allowEmpty: true);
 
-  InterfaceDefinition _createInterface(
-      Element method, String name, String type) {
+  EnumDefinition _createEnum(Element type) {
+    final def = new EnumDefinition(type.attributes["name"], _getDocs(type));
+    def.values.addAll(_getChildren(_getChild(type, "enum"), "value")
+        .map((c) => _getChild(c, "code").text));
+    return def;
+  }
+
+  TypeAliasDefinition _createTypeAlias(Element type) {
+    return new TypeAliasDefinition(_getType(_getChild(type, "ref")),
+        type.attributes["name"], _getDocs(type));
+  }
+
+  InterfaceDefinition _createInterface(Element method, String name, String type,
+      {bool allowEmpty: false}) {
     final doc = _getDocs(method);
     final properties = method.querySelectorAll("$type field");
 
-    if (properties.length == 0) return null;
+    if (properties.length == 0 && !allowEmpty) return null;
 
     final def = new InterfaceDefinition(name, doc);
     def.properties.addAll(properties.map(_getPropertyDefinition));
@@ -114,4 +137,4 @@ Iterable<Element> _getChildren(Element element, [String tag]) =>
         c.nodeType != Node.TEXT_NODE && (tag == null || c.localName == tag));
 
 Element _getChild(Element element, [String tag]) =>
-    _getChildren(element, tag).first;
+    _getChildren(element, tag).firstWhere((e) => true, orElse: () => null);
