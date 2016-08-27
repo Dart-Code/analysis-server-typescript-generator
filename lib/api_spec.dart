@@ -23,17 +23,32 @@ class ApiSpec {
       final resp = _createResponseClass(r);
       if (resp != null) classes.add(resp);
     });
+    classes.addAll(
+        _apiDoc.querySelectorAll("notification").map(_createNotificationClass));
   }
 
-  ClassDefinition _createRequestClass(Element method) =>
-      _createClass(method, "Request", "params");
-  ClassDefinition _createResponseClass(Element method) =>
-      _createClass(method, "Response", "result");
+  ClassDefinition _createRequestClass(Element method) => _createClass(
+      method,
+      _titleCase(method.parent.attributes["name"]) +
+          _titleCase(method.attributes["method"]) +
+          "Request",
+      "params");
 
-  ClassDefinition _createClass(Element method, String suffix, String type) {
-    final name = _titleCase(method.parent.attributes["name"]) +
-        _titleCase(method.attributes["method"]) +
-        suffix;
+  ClassDefinition _createResponseClass(Element method) => _createClass(
+      method,
+      _titleCase(method.parent.attributes["name"]) +
+          _titleCase(method.attributes["method"]) +
+          "Response",
+      "result");
+
+  ClassDefinition _createNotificationClass(Element event) => _createClass(
+      event,
+      _titleCase(event.parent.attributes["name"]) +
+          _titleCase(event.attributes["event"]) +
+          "Notification",
+      "params");
+
+  ClassDefinition _createClass(Element method, String name, String type) {
     final doc = _getDocs(method);
     final properties = method.querySelectorAll("$type field");
 
