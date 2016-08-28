@@ -6,9 +6,10 @@ class Definition {
 }
 
 class InterfaceDefinition extends Definition {
+  String parent;
   final properties = new List<PropertyDefinition>();
 
-  InterfaceDefinition(String name, String doc) : super(name, doc);
+  InterfaceDefinition(String name, String doc, {this.parent}) : super(name, doc);
 }
 
 class PropertyDefinition extends Definition {

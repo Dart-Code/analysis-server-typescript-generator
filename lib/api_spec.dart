@@ -37,6 +37,11 @@ class ApiSpec {
       else
         defs.add(_createTypeInterface(t));
     });
+    // Refactoring feedback.
+    _apiDoc.querySelectorAll("refactoring").forEach((r) {
+      final fbk = _createRefactoringFeedbackInterface(r);
+      if (fbk != null) defs.add(fbk);
+    });
   }
 
   InterfaceDefinition _createRequestInterface(Element method) =>
@@ -79,14 +84,18 @@ class ApiSpec {
         type.attributes["name"], _getDocs(type));
   }
 
+  InterfaceDefinition _createRefactoringFeedbackInterface(Element type) =>
+      _createInterface(
+          type, _prettyName(type.attributes["kind"]) + "Feedback", "feedback", parent: "RefactoringFeedback");
+
   InterfaceDefinition _createInterface(Element method, String name, String type,
-      {bool allowEmpty: false}) {
+      {bool allowEmpty: false, String parent}) {
     final doc = _getDocs(method);
     final properties = method.querySelectorAll("$type field");
 
     if (properties.length == 0 && !allowEmpty) return null;
 
-    final def = new InterfaceDefinition(name, doc);
+    final def = new InterfaceDefinition(name, doc, parent: parent);
     def.properties.addAll(properties.map(_getPropertyDefinition));
     return def;
   }
@@ -128,6 +137,10 @@ String _getType(Element field) {
 
 String _titleCase(String str) =>
     str.substring(0, 1).toUpperCase() + str.substring(1);
+
+// Converts THIS_AND_THIS to ThisAndThis
+String _prettyName(String str) =>
+    str.split('_').map((s) => _titleCase(s.toLowerCase())).join('');
 
 String _getDocs(Element element) =>
     _getChildren(element, 'p').map((p) => p.text.trim()).join("\r\n\r\n");
