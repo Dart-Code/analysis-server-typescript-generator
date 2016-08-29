@@ -71,5 +71,5 @@ class TypeScriptGenerator {
         '\r\n$indent */';
   }
 
-  String _getIndent(num level) => '\t' * level;
+  String _getIndent(int level) => '\t' * level;
 }
