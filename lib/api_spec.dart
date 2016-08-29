@@ -86,7 +86,8 @@ class ApiSpec {
 
   InterfaceDefinition _createRefactoringFeedbackInterface(Element type) =>
       _createInterface(
-          type, _prettyName(type.attributes["kind"]) + "Feedback", "feedback", parent: "RefactoringFeedback");
+          type, _prettyName(type.attributes["kind"]) + "Feedback", "feedback",
+          parent: "RefactoringFeedback");
 
   InterfaceDefinition _createInterface(Element method, String name, String type,
       {bool allowEmpty: false, String parent}) {

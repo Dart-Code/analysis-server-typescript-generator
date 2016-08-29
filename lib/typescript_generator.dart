@@ -38,7 +38,8 @@ class TypeScriptGenerator {
   }
 
   void _writeInterface(StringBuffer output, InterfaceDefinition def) {
-    output.write('export interface ${def.name} ${def.parent != null ? "extends ${def.parent} " : ""}{');
+    output.write(
+        'export interface ${def.name} ${def.parent != null ? "extends ${def.parent} " : ""}{');
     def.properties.forEach((p) => _writeProperty(output, p));
     // Match Formatted typescript by having empty space for empty interfaces.
     if (def.properties.length == 0) output.write(' ');
