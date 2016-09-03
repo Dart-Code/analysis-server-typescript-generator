@@ -33,7 +33,7 @@ class TypeScriptGenerator {
     else if (def is TypeAliasDefinition)
       _writeTypeAlias(output, def);
     else
-      throw "Unknown type!";
+      throw new ArgumentError('Unknown type ${def.runtimeType}');
     output.writeln();
   }
 

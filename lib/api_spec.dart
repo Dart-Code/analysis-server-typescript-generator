@@ -132,7 +132,7 @@ String _getType(Element field) {
     case 'union':
       return _getChildren(field).map(_getType).join(" | ");
     default:
-      throw 'Unknown ${field.parent.outerHtml}';
+      throw new ArgumentError('Unknown ${field.parent.outerHtml}');
   }
 }
 
