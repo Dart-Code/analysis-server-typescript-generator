@@ -5,10 +5,7 @@
 			"name": "Dart command line",
 			"type": "dart-cli",
 			"request": "launch",
-			"cwd": "${workspaceRoot}",
-			"program": "${workspaceRoot}/bin/main.dart",
-			"args": [],
-			"debugSettings": "${command.debugSettings}"
+			"program": "${workspaceRoot}/bin/main.dart"
 		}
 	]
 }
