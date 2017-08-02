@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'dart:io';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
@@ -14,6 +15,11 @@ class ApiSpec {
   static Future<ApiSpec> download(Uri specUri) async {
     final resp = await http.get(specUri);
     return new ApiSpec._(resp.body);
+  }
+
+  static ApiSpec fromFile(String file) {
+    final body = new File(file).readAsStringSync();
+    return new ApiSpec._(body);
   }
 
   void buildDefinitions(List<Definition> defs) {
