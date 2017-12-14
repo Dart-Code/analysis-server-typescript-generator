@@ -12,7 +12,7 @@ class ApiSpec {
 
   ApiSpec._(String spec) : _apiDoc = parse(spec);
 
-  static Future<ApiSpec> download(Uri specUri) async {
+  static Future<ApiSpec> fromUri(Uri specUri) async {
     final resp = await http.get(specUri);
     return new ApiSpec._(resp.body);
   }

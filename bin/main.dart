@@ -16,20 +16,16 @@ final _files = [
 ];
 final _outputFile = new File("output/analysis_server_types.ts");
 
+const useLiveSpecs = true;
+
 Future main() async {
-  final types = new TypeScriptGenerator();
+  final typesFile = new TypeScriptGenerator();
 
-  if (true) {
-    await Future.forEach(_specUris, (Uri specUri) async {
-      final spec = await ApiSpec.download(specUri);
-      types.definitions.addAll(spec.getTypes());
-    });
-  } else {
-    _files.forEach((file) {
-      final spec = ApiSpec.fromFile(file);
-      types.definitions.addAll(spec.getTypes());
-    });
-  }
+  final specs = useLiveSpecs
+      ? await Future.wait(_specUris.map(ApiSpec.fromUri))
+      : _files.map(ApiSpec.fromFile);
 
-  await types.writeTo(_outputFile);
+  // Write all the types
+  specs.forEach((spec) => typesFile.definitions.addAll(spec.getTypes()));
+  await typesFile.writeTo(_outputFile);
 }
