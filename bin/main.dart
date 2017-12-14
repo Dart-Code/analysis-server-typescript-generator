@@ -17,19 +17,19 @@ final _files = [
 final _outputFile = new File("output/analysis_server_types.ts");
 
 Future main() async {
-  final gen = new TypeScriptGenerator();
+  final types = new TypeScriptGenerator();
 
   if (true) {
     await Future.forEach(_specUris, (Uri specUri) async {
       final spec = await ApiSpec.download(specUri);
-      spec.buildDefinitions(gen.definitions);
+      types.definitions.addAll(spec.getTypes());
     });
   } else {
     _files.forEach((file) {
       final spec = ApiSpec.fromFile(file);
-      spec.buildDefinitions(gen.definitions);
+      types.definitions.addAll(spec.getTypes());
     });
   }
 
-  await gen.writeTo(_outputFile);
+  await types.writeTo(_outputFile);
 }

@@ -22,32 +22,32 @@ class ApiSpec {
     return new ApiSpec._(body);
   }
 
-  void buildDefinitions(List<Definition> defs) {
+  Iterable<Definition> getTypes() sync* {
     // Request/responses.
-    _apiDoc.querySelectorAll("request").forEach((r) {
+    yield* _apiDoc.querySelectorAll("request").map((r) sync* {
       final req = _createRequestInterface(r);
-      if (req != null) defs.add(req);
+      if (req != null) yield req;
       final resp = _createResponseInterface(r);
-      if (resp != null) defs.add(resp);
-    });
+      if (resp != null) yield resp;
+    }).expand((x) => x);
     // Notifications.
-    defs.addAll(_apiDoc
+    yield* _apiDoc
         .querySelectorAll("notification")
-        .map(_createNotificationInterface));
+        .map(_createNotificationInterface);
     // Types.
-    _apiDoc.querySelectorAll("type").forEach((t) {
+    yield* _apiDoc.querySelectorAll("type").map((t) sync* {
       if (_getChild(t, "enum") != null)
-        defs.add(_createEnum(t));
+        yield _createEnum(t);
       else if (_getChild(t, "ref") != null)
-        defs.add(_createTypeAlias(t));
+        yield _createTypeAlias(t);
       else
-        defs.add(_createTypeInterface(t));
-    });
+        yield _createTypeInterface(t);
+    }).expand((x) => x);
     // Refactoring feedback.
-    _apiDoc.querySelectorAll("refactoring").forEach((r) {
+    yield* _apiDoc.querySelectorAll("refactoring").map((r) sync* {
       final fbk = _createRefactoringFeedbackInterface(r);
-      if (fbk != null) defs.add(fbk);
-    });
+      if (fbk != null) yield fbk;
+    }).expand((x) => x);
   }
 
   InterfaceDefinition _createRequestInterface(Element method) =>
