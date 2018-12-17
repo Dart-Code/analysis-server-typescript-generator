@@ -17,8 +17,8 @@ final _files = Platform.isWindows
         "M:\\Coding\\Applications\\Google\\dart-sdk\\sdk\\pkg\\analyzer_plugin\\tool\\spec\\common_types_spec.html",
       ]
     : [
-        "/Users/danny/Dev/Google/sdk/pkg/analysis_server/tool/spec/spec_input.html",
-        "/Users/danny/Dev/Google/sdk/pkg/analyzer_plugin/tool/spec/common_types_spec.html",
+        "/Users/dantup/Dev/Google/dart-sdk/sdk/pkg/analysis_server/tool/spec/spec_input.html",
+        "/Users/dantup/Dev/Google/dart-sdk/sdk/pkg/analyzer_plugin/tool/spec/common_types_spec.html",
       ];
 final _outputFile = new File("output/analysis_server_types.ts");
 
