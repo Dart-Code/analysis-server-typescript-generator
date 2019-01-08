@@ -1,5 +1,4 @@
 .packages
-output/
 pubspec.lock
 packages
 .DS_Store
