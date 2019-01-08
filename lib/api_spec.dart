@@ -110,6 +110,7 @@ class ApiSpec {
   PropertyDefinition _getPropertyDefinition(Element field) {
     return new PropertyDefinition(
         _getType(_getChild(field)),
+        field.attributes["value"],
         field.attributes["name"],
         field.attributes["optional"] == "true",
         _getDocs(field));

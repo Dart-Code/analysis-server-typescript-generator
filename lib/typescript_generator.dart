@@ -51,7 +51,7 @@ class TypeScriptGenerator {
     output.writeln();
     output.writeln(_formatDoc(prop.doc, indent: indent));
     output.writeln(
-        '$indent${prop.name}${prop.isOptional ? "?" : ""}: ${prop.type};');
+        '$indent${prop.name}${prop.isOptional ? "?" : ""}: ${prop.value != null ? '"${prop.value}"' : prop.type};');
   }
 
   void _writeEnum(StringBuffer output, EnumDefinition def) {

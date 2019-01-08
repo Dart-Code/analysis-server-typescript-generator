@@ -9,7 +9,8 @@ class InterfaceDefinition extends Definition {
   String parent;
   final properties = new List<PropertyDefinition>();
 
-  InterfaceDefinition(String name, String doc, {this.parent}) : super(name, doc);
+  InterfaceDefinition(String name, String doc, {this.parent})
+      : super(name, doc);
 }
 
 class PropertyDefinition extends Definition {
@@ -17,7 +18,8 @@ class PropertyDefinition extends Definition {
   String value;
   bool isOptional;
 
-  PropertyDefinition(this.type, String name, this.isOptional, String doc)
+  PropertyDefinition(
+      this.type, this.value, String name, this.isOptional, String doc)
       : super(name, doc);
 }
 

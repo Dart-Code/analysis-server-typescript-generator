@@ -3592,7 +3592,7 @@ export interface AddContentOverlay {
 	/**
 	 * 
 	 */
-	type: string;
+	type: "add";
 
 	/**
 	 * The new content of the file.
@@ -3694,7 +3694,7 @@ export interface ChangeContentOverlay {
 	/**
 	 * 
 	 */
-	type: string;
+	type: "change";
 
 	/**
 	 * The edits to be applied to the file.
@@ -4511,7 +4511,7 @@ export interface RemoveContentOverlay {
 	/**
 	 * 
 	 */
-	type: string;
+	type: "remove";
 }
 
 /**
