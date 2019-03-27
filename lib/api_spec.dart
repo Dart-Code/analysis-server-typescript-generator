@@ -24,7 +24,7 @@ String _getType(Element field) {
     case 'list':
       return '${_getType(_getChild(field))}[]';
     case 'map':
-      return '{ [key: string]: ${_getType(_getChild(_getChild(field, "value")))}; }';
+      return '{ [key: string]: ${_getType(_getChild(_getChild(field, "value")))} | undefined; }';
     case 'union':
       return _getChildren(field).map(_getType).join(" | ");
     default:
